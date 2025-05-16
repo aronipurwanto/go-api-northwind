@@ -13,7 +13,6 @@ import (
 	"log"
 
 	redisClient "github.com/aronipurwanto/go-api-northwind/internal/redis"
-	"github.com/gofiber/swagger"
 )
 
 func main() {
@@ -53,16 +52,6 @@ func main() {
 	orderController := controllers.NewOrderController(orderService)
 
 	app := fiber.New()
-
-	// Swagger info
-	// @title Northwind API
-	// @version 1.0
-	// @description REST API for Northwind orders
-	// @securityDefinitions.apikey BearerAuth
-	// @in header
-	// @name Authorization
-
-	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	routes.SetupRoutes(app, cfg, redis, authController, empController, categoryController, productController, orderController)
 	err = app.Listen(":" + cfg.Port)

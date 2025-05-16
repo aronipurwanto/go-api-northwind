@@ -5,6 +5,7 @@ import (
 	"github.com/aronipurwanto/go-api-northwind/controllers"
 	"github.com/aronipurwanto/go-api-northwind/middlewares"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -53,4 +54,13 @@ func SetupRoutes(app *fiber.App, cfg config.Config, redis *redis.Client,
 	order.Post("/", orderCtrl.Create)
 	order.Put("/:id", middlewares.ValidateIDParam("id"), orderCtrl.Update)
 	order.Delete("/:id", middlewares.ValidateIDParam("id"), orderCtrl.Delete)
+
+	// Swagger info
+	// @title Northwind API
+	// @version 1.0
+	// @description REST API for Northwind orders
+	// @securityDefinitions.apikey BearerAuth
+	// @in header
+	// @name Authorization
+	app.Get("/swagger/*", swagger.HandlerDefault)
 }
