@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/aronipurwanto/go-api-northwind/config"
 	"github.com/aronipurwanto/go-api-northwind/controllers"
+	"github.com/aronipurwanto/go-api-northwind/internal/soap"
 	"github.com/aronipurwanto/go-api-northwind/repositories"
 	"github.com/aronipurwanto/go-api-northwind/routes"
 	"github.com/aronipurwanto/go-api-northwind/services"
@@ -51,9 +52,18 @@ func main() {
 	orderService := services.NewOrderService(orderRepo)
 	orderController := controllers.NewOrderController(orderService)
 
+	// Init SOAP Client
+	soapClient, err := soap.NewSOAPClient(cfg)
+	if err != nil {
+		log.Fatal("Failed to initialize SOAP client: ", err)
+	}
+	log.Println("Connected to SOAP client")
+	soapController := controllers.NewSOAPController(soapClient)
+
 	app := fiber.New()
 
-	routes.SetupRoutes(app, cfg, redis, authController, empController, categoryController, productController, orderController)
+	routes.SetupRoutes(app, cfg, redis, authController, empController, categoryController, productController,
+		orderController, soapController)
 	err = app.Listen(":" + cfg.Port)
 	if err != nil {
 		log.Fatal("Failed start server: ", err)

@@ -79,9 +79,13 @@ func (s *AuthServiceImpl) Register(ctx context.Context, input *models.RegisterRe
 
 func (s *AuthServiceImpl) GenerateAccessToken(user *models.User) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id":   user.UserID,
-		"firstName": user.Username,
-		"exp":       time.Now().Add(15 * time.Minute).Unix(),
+		"user_id":    user.UserID,
+		"firstName":  user.Username,
+		"username":   user.Username,
+		"email":      user.Email,
+		"role":       user.Role,
+		"employeeId": user.EmployeeID,
+		"exp":        time.Now().Add(15 * time.Minute).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(s.secret))
@@ -89,9 +93,13 @@ func (s *AuthServiceImpl) GenerateAccessToken(user *models.User) (string, error)
 
 func (s *AuthServiceImpl) GenerateRefreshToken(user *models.User) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id":   user.UserID,
-		"firstName": user.Username,
-		"exp":       time.Now().Add(24 * time.Hour).Unix(),
+		"user_id":    user.UserID,
+		"firstName":  user.Username,
+		"username":   user.Username,
+		"email":      user.Email,
+		"role":       user.Role,
+		"employeeId": user.EmployeeID,
+		"exp":        time.Now().Add(24 * time.Hour).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(s.secret))

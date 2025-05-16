@@ -6,13 +6,14 @@ import (
 )
 
 type Config struct {
-	DBDriver  string
-	DBSource  string
-	Port      string
-	JWTSecret string
-	RedisHost string
-	RedisPort string
-	RedisPass string
+	DBDriver    string
+	DBSource    string
+	Port        string
+	JWTSecret   string
+	RedisHost   string
+	RedisPort   string
+	RedisPass   string
+	SoapWSDLURL string
 }
 
 func LoadConfig() Config {
@@ -34,12 +35,13 @@ func LoadConfig() Config {
 	}
 
 	return Config{
-		DBDriver:  viper.GetString("DB_DRIVER"),
-		DBSource:  viper.GetString("DB_SOURCE"),
-		Port:      viper.GetString("PORT"),
-		JWTSecret: viper.GetString("JWT_SECRET"),
-		RedisHost: viper.GetString("REDIS_HOST"),
-		RedisPort: viper.GetString("REDIS_PORT"),
-		RedisPass: viper.GetString("REDIS_PASS"),
+		DBDriver:    viper.GetString("DB_DRIVER"),
+		DBSource:    viper.GetString("DB_SOURCE"),
+		Port:        viper.GetString("PORT"),
+		JWTSecret:   viper.GetString("JWT_SECRET"),
+		RedisHost:   viper.GetString("REDIS_HOST"),
+		RedisPort:   viper.GetString("REDIS_PORT"),
+		RedisPass:   viper.GetString("REDIS_PASS"),
+		SoapWSDLURL: viper.GetString("SOAP_WSDL_URL"),
 	}
 }

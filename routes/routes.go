@@ -14,7 +14,8 @@ func SetupRoutes(app *fiber.App, cfg config.Config, redis *redis.Client,
 	empCtrl *controllers.EmployeeController,
 	catCtrl *controllers.CategoryController,
 	prodCtrl *controllers.ProductController,
-	orderCtrl *controllers.OrderController) {
+	orderCtrl *controllers.OrderController,
+	soapCtrl *controllers.SOAPController) {
 
 	api := app.Group("/api/v1")
 
@@ -54,6 +55,10 @@ func SetupRoutes(app *fiber.App, cfg config.Config, redis *redis.Client,
 	order.Post("/", orderCtrl.Create)
 	order.Put("/:id", middlewares.ValidateIDParam("id"), orderCtrl.Update)
 	order.Delete("/:id", middlewares.ValidateIDParam("id"), orderCtrl.Delete)
+
+	// SOAP
+	soap := api.Group("/soap")
+	soap.Get("/number-to-words/:number", soapCtrl.ConvertNumber)
 
 	// Swagger info
 	// @title Northwind API

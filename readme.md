@@ -24,6 +24,10 @@ A lightweight REST API for the Northwind sample database using:
 - go get github.com/stretchr/testify
 ---
 
+## WSDL Lib
+- go get github.com/tiaguinho/gosoap
+---
+
 ## 📁 Project Structure
 ````
 northwind-api/
