@@ -59,6 +59,7 @@ func SetupRoutes(app *fiber.App, cfg config.Config, redis *redis.Client,
 	// SOAP
 	soap := api.Group("/soap")
 	soap.Get("/number-to-words/:number", soapCtrl.GetNumberInWords)
+	soap.Get("/number-to-dollars/:number", soapCtrl.GetNumberInDollars)
 
 	// Swagger info
 	// @title Northwind API

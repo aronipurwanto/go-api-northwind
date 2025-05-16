@@ -42,3 +42,24 @@ func (s *SOAPClient) CallNumberToWords(number string) (string, error) {
 
 	return result.NumberToWordsResult, nil
 }
+
+func (s *SOAPClient) CallNumberToDollars(number string) (string, error) {
+	params := gosoap.Params{
+		"dNum": number,
+	}
+	resp, err := s.client.Call("NumberToDollars", params)
+	if err != nil {
+		return "", err
+	}
+
+	var result struct {
+		XMLName               xml.Name `xml:"NumberToDollarsResponse"`
+		NumberToDollarsResult string   `xml:"NumberToDollarsResult"`
+	}
+
+	if err := resp.Unmarshal(&result); err != nil {
+		return "", fmt.Errorf("failed to parse SOAP response: %v", err)
+	}
+
+	return result.NumberToDollarsResult, nil
+}
