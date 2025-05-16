@@ -2,38 +2,38 @@ package controllers
 
 import (
 	"github.com/aronipurwanto/go-api-northwind/internal/soap"
+	"github.com/aronipurwanto/go-api-northwind/utils"
 	"github.com/gofiber/fiber/v2"
-	"strconv"
 )
 
 type SOAPController struct {
-	client *soap.SOAPClient
+	soapClient *soap.SOAPClient
 }
 
-func NewSOAPController(client *soap.SOAPClient) *SOAPController {
-	return &SOAPController{client: client}
+func NewSOAPController(service *soap.SOAPClient) *SOAPController {
+	return &SOAPController{soapClient: service}
 }
 
-// ConvertNumber godoc
-// @Summary Convert number to words using SOAP
+// GetNumberInWords godoc
+// @Summary Convert number to words
 // @Tags SOAP
-// @Accept json
 // @Produce json
-// @Param number path int true "Number"
+// @Param number path string true "Number to convert"
 // @Success 200 {object} map[string]string
-// @Failure 400 {object} map[string]string
+// @Failure 400 {object} utils.StandardErrorResponse
 // @Router /soap/number-to-words/{number} [get]
-func (s *SOAPController) ConvertNumber(c *fiber.Ctx) error {
-	numStr := c.Params("number")
-	num, err := strconv.Atoi(numStr)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid number"})
+func (c *SOAPController) GetNumberInWords(ctx *fiber.Ctx) error {
+	number := ctx.Params("number")
+	if number == "" {
+		return utils.ErrorResponse(ctx, 400, "Number parameter is required", nil)
 	}
 
-	result, err := s.client.NumberToWords(num)
+	words, err := c.soapClient.CallNumberToWords(number)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return utils.ErrorResponse(ctx, 500, "Failed to convert number", []utils.ErrorDetail{{Message: err.Error()}})
 	}
 
-	return c.JSON(fiber.Map{"words": result})
+	return utils.SuccessResponse(ctx, 200, "Number converted", fiber.Map{
+		"words": words,
+	})
 }

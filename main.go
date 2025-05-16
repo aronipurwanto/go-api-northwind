@@ -53,10 +53,7 @@ func main() {
 	orderController := controllers.NewOrderController(orderService)
 
 	// Init SOAP Client
-	soapClient, err := soap.NewSOAPClient(cfg)
-	if err != nil {
-		log.Fatal("Failed to initialize SOAP client: ", err)
-	}
+	soapClient := soap.NewSOAPClient(cfg)
 	log.Println("Connected to SOAP client")
 	soapController := controllers.NewSOAPController(soapClient)
 

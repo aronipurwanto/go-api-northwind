@@ -1,9 +1,11 @@
 package soap
 
 import (
+	"encoding/xml"
 	"fmt"
 	"github.com/aronipurwanto/go-api-northwind/config"
 	"github.com/tiaguinho/gosoap"
+	"log"
 	"net/http"
 )
 
@@ -11,28 +13,32 @@ type SOAPClient struct {
 	client *gosoap.Client
 }
 
-func NewSOAPClient(cfg config.Config) (*SOAPClient, error) {
+func NewSOAPClient(cfg config.Config) *SOAPClient {
 	httpClient := &http.Client{}
 	client, err := gosoap.SoapClient(cfg.SoapWSDLURL, httpClient)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create SOAP client: %w", err)
+		log.Fatalf("Failed to create SOAP client: %v", err)
 	}
-	return &SOAPClient{client: client}, nil
+	return &SOAPClient{client: client}
 }
 
-func (s *SOAPClient) NumberToWords(number int) (string, error) {
+func (s *SOAPClient) CallNumberToWords(number string) (string, error) {
 	params := gosoap.Params{
 		"ubiNum": number,
 	}
-	res, err := s.client.Call("NumberToWords", params)
+	resp, err := s.client.Call("NumberToWords", params)
 	if err != nil {
 		return "", err
 	}
 
-	// Ambil hasil dari response
-	var result string
-	if err := res.Unmarshal(&result); err != nil {
-		return "", err
+	var result struct {
+		XMLName             xml.Name `xml:"NumberToWordsResponse"`
+		NumberToWordsResult string   `xml:"NumberToWordsResult"`
 	}
-	return result, nil
+
+	if err := resp.Unmarshal(&result); err != nil {
+		return "", fmt.Errorf("failed to parse SOAP response: %v", err)
+	}
+
+	return result.NumberToWordsResult, nil
 }
