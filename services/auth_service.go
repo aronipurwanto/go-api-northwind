@@ -43,7 +43,7 @@ func (s *AuthServiceImpl) Login(ctx context.Context, identifier, password string
 	if err != nil {
 		return nil, fmt.Errorf("invalid credentials")
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
+	if err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
 		return nil, fmt.Errorf("invalid credentials")
 	}
 	return user, nil
@@ -67,10 +67,11 @@ func (s *AuthServiceImpl) Register(ctx context.Context, input *models.RegisterRe
 		Email:        input.Email,
 		PasswordHash: string(hashed),
 		IsActive:     true,
-		Role:         "user",
+		Role:         input.Role,
+		EmployeeID:   input.EmployeeID,
 	}
 
-	if err := s.repo.CreateUser(user); err != nil {
+	if err = s.repo.CreateUser(user); err != nil {
 		return nil, err
 	}
 	return user, nil

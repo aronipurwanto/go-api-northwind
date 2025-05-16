@@ -65,6 +65,9 @@ func main() {
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	routes.SetupRoutes(app, cfg, redis, authController, empController, categoryController, productController, orderController)
-
-	log.Fatal(app.Listen(":" + cfg.Port))
+	err = app.Listen(":" + cfg.Port)
+	if err != nil {
+		log.Fatal("Failed start server: ", err)
+	}
+	log.Println("Server started")
 }

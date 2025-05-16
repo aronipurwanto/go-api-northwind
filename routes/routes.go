@@ -15,7 +15,7 @@ func SetupRoutes(app *fiber.App, cfg config.Config, redis *redis.Client,
 	prodCtrl *controllers.ProductController,
 	orderCtrl *controllers.OrderController) {
 
-	api := app.Group("/api")
+	api := app.Group("/api/v1")
 
 	api.Post("/login", authCtrl.Login)
 	api.Post("/refresh", authCtrl.Refresh)
