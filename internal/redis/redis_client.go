@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"time"
@@ -21,7 +22,7 @@ func SetBlacklistToken(ctx context.Context, rdb *redis.Client, token string, dur
 
 func IsTokenBlacklisted(ctx context.Context, rdb *redis.Client, token string) (bool, error) {
 	res, err := rdb.Get(ctx, token).Result()
-	if err == redis.Nil {
+	if errors.Is(err, redis.Nil) {
 		return false, nil
 	} else if err != nil {
 		return false, err
